@@ -12,14 +12,14 @@ const port = process.env.PORT || 8000;
 app.post("/", save.array("videoFile"), (req, res) => {
     try {
         console.log(req.files)
+        uploadVideo.uploadVideo("Hello", "World", "TEST")
         return res
-        // uploadVideo.uploadVideo("Hello", "World", "TEST")
     }
-    catch(err) {
+    catch (err) {
         console.error(err)
     }
 });
 
 app.listen(port, () => {
-  console.log(`Server is Fire at http://localhost:${port}`);
+    console.log(`Server is Fire at http://localhost:${port}`);
 });

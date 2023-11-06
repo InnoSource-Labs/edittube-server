@@ -3,6 +3,7 @@ const readline = require('readline');
 const assert = require('assert')
 const { google } = require('googleapis');
 const OAuth2 = google.auth.OAuth2;
+const stream = require('stream');
 
 // video category IDs for YouTube:
 const categoryIds = {
@@ -15,11 +16,12 @@ const categoryIds = {
 const SCOPES = ['https://www.googleapis.com/auth/youtube.upload'];
 const TOKEN_PATH = './' + 'client_oauth_token.json';
 
-const videoFilePath = './bunny.mp4'
+const videoFilePath = 'https://res.cloudinary.com/dqrideic3/video/upload/v1699275869/Edittube/egmgrfd3xrb1o33mipmv.mp4'
 const thumbFilePath = '../thumb.png'
 
+
 exports.uploadVideo = (title, description, tags) => {
-  assert(fs.existsSync(videoFilePath))
+  // assert(fs.existsSync(videoFilePath))
   // assert(fs.existsSync(thumbFilePath))
 
   // Load client secrets from a local file.
@@ -37,9 +39,10 @@ exports.uploadVideo = (title, description, tags) => {
  * Upload the video file.
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-function uploadVideo(auth, title, description, tags) {
+*/
+async function uploadVideo(auth, title, description, tags) {
   const service = google.youtube('v3')
+  const readableStream = await fetch(videoFilePath).then(r => stream.Readable.fromWeb(r.body));
 
   service.videos.insert({
     auth: auth,
@@ -58,9 +61,9 @@ function uploadVideo(auth, title, description, tags) {
       },
     },
     media: {
-      body: fs.createReadStream(videoFilePath),
+      body: readableStream,
     },
-  }, function(err, response) {
+  }, function (err, response) {
     if (err) {
       console.log(JSON.stringify(err));
       return;
@@ -98,7 +101,7 @@ function authorize(credentials, callback) {
   const oauth2Client = new OAuth2(clientId, clientSecret, redirectUrl);
 
   // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, function(err, token) {
+  fs.readFile(TOKEN_PATH, function (err, token) {
     if (err) {
       getNewToken(oauth2Client, callback);
     } else {
@@ -126,9 +129,9 @@ function getNewToken(oauth2Client, callback) {
     input: process.stdin,
     output: process.stdout
   });
-  rl.question('Enter the code from that page here: ', function(code) {
+  rl.question('Enter the code from that page here: ', function (code) {
     rl.close();
-    oauth2Client.getToken(code, function(err, token) {
+    oauth2Client.getToken(code, function (err, token) {
       if (err) {
         console.log('Error while trying to retrieve access token', err);
         return;
