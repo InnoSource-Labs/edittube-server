@@ -1,7 +1,8 @@
 const express = require("express");
 const multer = require("multer");
+const Stream = require("stream")
 
-const save = multer({ dest: "uploads/" });
+const save = multer();
 const uploadVideo = require("./upload")
 
 const app = express();
@@ -11,9 +12,10 @@ const port = process.env.PORT || 8000;
 
 app.post("/", save.array("videoFile"), (req, res) => {
     try {
-        console.log(req.files)
-        return res
-        // uploadVideo.uploadVideo("Hello", "World", "TEST")
+        const file = req.files?.[0]?.buffer;
+        const stream = Stream.Readable.from(file);
+        uploadVideo.uploadVideo("Hello", "World", "TEST", stream)
+        return res;
     }
     catch(err) {
         console.error(err)
