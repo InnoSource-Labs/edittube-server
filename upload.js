@@ -18,7 +18,7 @@ const TOKEN_PATH = './' + 'client_oauth_token.json';
 const videoFilePath = './bunny.mp4'
 const thumbFilePath = '../thumb.png'
 
-exports.uploadVideo = (title, description, tags) => {
+exports.uploadVideo = (title, description, tags, readable) => {
   assert(fs.existsSync(videoFilePath))
   // assert(fs.existsSync(thumbFilePath))
 
@@ -29,7 +29,7 @@ exports.uploadVideo = (title, description, tags) => {
       return;
     }
     // Authorize a client with the loaded credentials, then call the YouTube API.
-    authorize(JSON.parse(content), (auth) => uploadVideo(auth, title, description, tags));
+    authorize(JSON.parse(content), (auth) => uploadVideo(auth, title, description, tags, readable));
   });
 }
 
@@ -38,7 +38,7 @@ exports.uploadVideo = (title, description, tags) => {
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function uploadVideo(auth, title, description, tags) {
+function uploadVideo(auth, title, description, tags, readable) {
   const service = google.youtube('v3')
 
   service.videos.insert({
@@ -58,7 +58,8 @@ function uploadVideo(auth, title, description, tags) {
       },
     },
     media: {
-      body: fs.createReadStream(videoFilePath),
+      // body: fs.createReadStream(videoFilePath),
+      body: readable
     },
   }, function(err, response) {
     if (err) {
