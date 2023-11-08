@@ -1,8 +1,11 @@
+require('dotenv').config()
 const express = require("express");
 const multer = require("multer");
 const Stream = require("stream")
 const save = multer();
 const uploadVideo = require("./upload")
+
+const { connectDb } = require("./database/connectDb")
 const cloudinaryRoutes = require("./routes/cloudinaryRoutes")
 
 const app = express();
@@ -23,7 +26,7 @@ app.post("/", save.array("videoFile"), (req, res) => {
         console.error(err)
     }
 });
-
+connectDb()
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);
 });
