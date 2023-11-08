@@ -1,13 +1,17 @@
-const mongoose = require("mongoose")
-const MONGO_URI = process.env.MONGO_URI
-const connectDb = async ()=>{
-    mongoose.connect(MONGO_URI)
-    const dbConnect = mongoose.connection
-    dbConnect.once("open",()=>{
-        console.log("successfull connected to database");
-    })
-    dbConnect.on("error",()=>{
-        console.log("failed to connnect to  database");
-    })
-}
-module.exports = {connectDb}
+const mongoose = require("mongoose");
+const MONGO_URI = process.env.MONGO_URI;
+
+const connectDb = async () => {
+    try {
+        await mongoose.connect(MONGO_URI);
+        console.log("Successfully connected to the database");
+    } catch (error) {
+        console.error("Failed to connect to the database:", error);
+    }
+
+    mongoose.connection.on("error", (error) => {
+        console.error("Database connection error:", error);
+    });
+};
+
+module.exports = { connectDb };
