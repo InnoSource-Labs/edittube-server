@@ -12,15 +12,19 @@ cloudinary.config({
 });
 
 function uploadtoCloudinary(videoBuffer) {
-    try {
-        let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "edittube_videos", resource_type: "video" }, function (error, result) {
-            return result;
-        });
+    return new Promise((resolve, reject) => {
+        let cld_upload_stream = cloudinary.uploader.upload_stream(
+            {
+                folder: "edittube_videos",
+                resource_type: "video"
+            },
+            (error, result) => {
+                if (result) resolve(result)
+                else reject(error)
+            }
+        );
         streamifier.createReadStream(videoBuffer).pipe(cld_upload_stream);
-    }
-    catch (error) {
-        return error;
-    }
+    })
 }
 
 async function deleteFromCloudinary(publicId) {
@@ -28,7 +32,6 @@ async function deleteFromCloudinary(publicId) {
         const deleteRes = await cloudinary.uploader.destroy(publicId, {
             resource_type: "video"
         });
-        console.log(deleteRes);
         return deleteRes;
     }
     catch (error) {
