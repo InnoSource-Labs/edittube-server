@@ -6,14 +6,11 @@ const save = multer();
 const uploadVideo = require("./upload")
 
 const { connectDb } = require("./database/connectDb")
-const cloudinaryRoutes = require("./routes/cloudinaryRoutes")
-
 const app = express();
 const port = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api/cloudinary', cloudinaryRoutes);
 
 app.post("/", save.array("videoFile"), (req, res) => {
     try {
