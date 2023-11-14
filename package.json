@@ -2,9 +2,9 @@
     "name": "editube-server",
     "version": "1.0.0",
     "description": "This is server for edittube application",
-    "main": "src/index.js",
+    "main": "index.js",
     "scripts": {
-        "dev": "nodemon src/index.js",
+        "dev": "nodemon index.js",
         "format:check": "prettier --check .",
         "format:write": "prettier --write .",
         "lint:check": "eslint .",

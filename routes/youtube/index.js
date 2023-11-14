@@ -1,10 +1,10 @@
 const multer = require("multer");
 const Stream = require("stream");
-const express = require("express");
+const { Router } = require("express");
 const { uploadVideo } = require("../../utils/youtube");
 
 const save = multer();
-const router = express.router();
+const router = Router();
 
 router.post("/", save.array("videoFile"), (req, res) => {
     try {
