@@ -3,16 +3,19 @@
 
 ## Folder Structure
 
--   src
-    -   config
-        -   database/index.js
-    -   routes
-        -   auth/index.js
-        -   youtube/index.js
-    -   utils
-        -   cloudinary/index.js
-        -   youtube/index.js
-    -   index.js (Entry File)
+-   config
+    -   database/index.js
+-   controllers
+    -   cloudinary/index.js
+    -   youtube/index.js
+-   modaels
+    -   user.js
+    -   video.js
+    -   workspace.js
+-   routes
+    -   auth/index.js
+    -   youtube/index.js
+-   index.js (Entry File)
 -   repo config files (README.md, package.json etc).
 
 ### Note

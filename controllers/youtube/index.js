@@ -1,6 +1,6 @@
 const fs = require("fs");
 const readline = require("readline");
-const assert = require("assert");
+// const assert = require("assert");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 

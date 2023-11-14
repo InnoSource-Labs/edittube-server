@@ -1,10 +1,12 @@
 const multer = require("multer");
 const Stream = require("stream");
+const express = require("express");
 const { uploadVideo } = require("../../utils/youtube");
 
 const save = multer();
+const router = express.router();
 
-app.post("/", save.array("videoFile"), (req, res) => {
+router.post("/", save.array("videoFile"), (req, res) => {
     try {
         const file = req.files?.[0]?.buffer;
         const stream = Stream.Readable.from(file);
@@ -14,3 +16,5 @@ app.post("/", save.array("videoFile"), (req, res) => {
         console.error(err);
     }
 });
+
+module.exports = router;
