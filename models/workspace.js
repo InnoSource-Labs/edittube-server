@@ -27,6 +27,7 @@ const workspaceSchema = mongoose.Schema({
     },
     editorIds: {
         type: [String],
+        required: true,
         default: [],
     },
 });
