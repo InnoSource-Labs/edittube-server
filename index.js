@@ -1,29 +1,26 @@
-require('dotenv').config()
 const express = require("express");
-const multer = require("multer");
-const Stream = require("stream")
-const save = multer();
-const uploadVideo = require("./upload")
+const enviroment = require("./enviroment");
+const userRoute = require("./routes/user");
+const { connectDB } = require("./config/database");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const { jwtCheck, unauthorized } = require("./middleware/auth");
 
-const { connectDb } = require("./database/connectDb")
 const app = express();
-const port = process.env.PORT || 8000;
+const port = enviroment.port || 8000;
 
-app.use(express.json());
+connectDB();
+
+app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({ credentials: true, origin: enviroment.origin_uri }));
+app.use(cookieParser());
 
-app.post("/", save.array("videoFile"), (req, res) => {
-    try {
-        const file = req.files?.[0]?.buffer;
-        const stream = Stream.Readable.from(file);
-        uploadVideo.uploadVideo("Hello", "World", "TEST", stream)
-        return res;
-    }
-    catch (err) {
-        console.error(err)
-    }
-});
-connectDb()
+app.use(jwtCheck);
+app.use(unauthorized);
+
+app.use("/users", userRoute);
+
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);
 });
