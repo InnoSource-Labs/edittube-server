@@ -9,7 +9,7 @@ const router = Router();
 
 router.get("/all", async (req, res) => {
     try {
-        const { uid, page } = req.body;
+        const { uid, page } = req.query;
         if (uid) {
             const data = await getAllWorkspaces(uid, page ? page : 1);
             res.status(200).json({
@@ -33,7 +33,7 @@ router.get("/all", async (req, res) => {
 
 router.get("/creator", async (req, res) => {
     try {
-        const { uid, page } = req.body;
+        const { uid, page } = req.query;
         if (uid) {
             const data = await getCreatorWorkspaces(uid, page ? page : 1);
             res.status(200).json({
@@ -57,7 +57,7 @@ router.get("/creator", async (req, res) => {
 
 router.get("/editor", async (req, res) => {
     try {
-        const { uid, page } = req.body;
+        const { uid, page } = req.query;
         if (uid) {
             const data = await getEditorWorkspaces(uid, page ? page : 1);
             res.status(200).json({
