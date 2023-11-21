@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
-const videoSchema = mongoose.Schema({
+const videoSchema = new mongoose.Schema({
     id: {
         type: String,
         required: true,
     },
-    created_at: {
-        type: Number,
+    createdAt: {
+        type: String,
         required: true,
     },
-    updated_at: {
-        type: Number,
+    updatedAt: {
+        type: String,
         required: true,
     },
     workspaceId: {
@@ -34,9 +34,10 @@ const videoSchema = mongoose.Schema({
         required: true,
     },
     status: {
-        type: "pending" | "approved" | "rejected",
-        required: true,
+        type: String,
+        enum: ["pending", "approved", "rejected"],
         default: "pending",
+        required: true,
     },
 });
 

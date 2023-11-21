@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
-const workspaceSchema = mongoose.Schema({
+const workspaceSchema = new mongoose.Schema({
     id: {
         type: String,
         required: true,
     },
-    created_at: {
-        type: Number,
+    createdAt: {
+        type: String,
         required: true,
     },
-    updated_at: {
-        type: Number,
+    updatedAt: {
+        type: String,
         required: true,
     },
     creatorId: {

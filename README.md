@@ -8,6 +8,8 @@
 -   controllers
     -   cloudinary/index.js
     -   youtube/index.js
+-   middleware
+    -   auth.js
 -   modaels
     -   user.js
     -   video.js
