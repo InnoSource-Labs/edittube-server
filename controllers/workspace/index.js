@@ -1,95 +1,42 @@
-const { error } = require("console");
 const Workspace = require("../../models/workspace");
 
-let limit = 3;
+let limit = 5;
 
-async function getAllWorkspaces(uid, page) {
-    try {
-        let workspaces = await Workspace.find({
-            $or: [{ creatorId: uid }, { editorIds: uid }],
-        })
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
+async function getWorkspaces(uid, filter, page) {
+    const isCreator = { creatorId: uid };
+    const isEditor = {
+        editors: {
+            $elemMatch: {
+                uid,
+            },
+        },
+    };
 
-        let totalresults = await Workspace.countDocuments({
-            $or: [{ creatorId: uid }, { editorIds: uid }],
-        });
+    const query =
+        filter === "creator"
+            ? isCreator
+            : filter === "editor"
+              ? isEditor
+              : { $or: [isCreator, isEditor] };
 
-        workspaces = workspaces.map((workspace) => {
-            workspace = {
-                workspace,
-                role: workspace.creatorId === uid ? "creator" : "editor",
-            };
-            return workspace;
-        });
+    const workspaces = await Workspace.find(query)
+        .exists("updatedAt")
+        .sort("-updatedAt")
+        .skip((page - 1) * limit)
+        .limit(limit);
 
-        return {
-            totalresults,
-            currentpage: page,
-            totalpages: Math.ceil(totalresults / limit),
-            workspaces,
-        };
-    } catch (error) {
-        throw new error(error.message);
-    }
+    const totalresults = await Workspace.countDocuments(query);
+
+    const workspacesWithRole = workspaces.map((workspace) => ({
+        ...workspace,
+        role: workspace.creatorId === uid ? "creator" : "editor",
+    }));
+
+    return {
+        currentpage: page,
+        workspaces: workspacesWithRole,
+        totalpages: Math.ceil(totalresults / limit),
+    };
 }
 
-async function getCreatorWorkspaces(uid, page) {
-    try {
-        let workspaces = await Workspace.find({ creatorId: uid })
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
-
-        let totalresults = await Workspace.countDocuments({ creatorId: uid });
-
-        workspaces = workspaces.map((workspace) => {
-            workspace = {
-                workspace,
-                role: "creator",
-            };
-            return workspace;
-        });
-
-        return {
-            totalresults,
-            currentpage: page,
-            totalpages: Math.ceil(totalresults / limit),
-            workspaces,
-        };
-    } catch (error) {
-        throw new error(error.message)
-    }
-}
-
-async function getEditorWorkspaces(uid, page) {
-    try {
-        let workspaces = await Workspace.find({ editorIds: uid })
-            .limit(limit * 1)
-            .skip((page - 1) * limit);
-        let totalresults = await Workspace.countDocuments({ editorIds: uid });
-
-        workspaces = workspaces.map((workspace) => {
-            workspace = {
-                workspace,
-                role: "editor",
-            };
-            return workspace;
-        });
-
-        return {
-            totalresults,
-            currentpage: page,
-            totalpages: Math.ceil(totalresults / limit),
-            workspaces,
-        };
-    }
-    catch {
-        throw new error(error.message)
-    }
-}
-
-module.exports = {
-    getAllWorkspaces,
-    getCreatorWorkspaces,
-    getEditorWorkspaces,
-};
+module.exports = { getWorkspaces };

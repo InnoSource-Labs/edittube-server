@@ -21,7 +21,7 @@ app.use(jwtCheck);
 app.use(unauthorized);
 
 app.use("/users", userRoute);
-app.use("/workspace", workspaceRoute);
+app.use("/workspaces", workspaceRoute);
 
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);
