@@ -10,10 +10,10 @@ router.post("/logedin", async (req, res) => {
             const { status, user } = await updateLogedinUser(req.body);
             res.status(status).json(user);
         } else {
-            res.status(400).json({ message: "Bad Request" });
+            res.status(400);
         }
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500);
     }
 });
 
