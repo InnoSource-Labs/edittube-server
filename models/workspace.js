@@ -1,5 +1,16 @@
 const mongoose = require("mongoose");
 
+const editorsSchema = new mongoose.Schema({
+    uid: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+    },
+});
+
 const workspaceSchema = new mongoose.Schema({
     id: {
         type: String,
@@ -25,8 +36,8 @@ const workspaceSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    editorIds: {
-        type: [String],
+    editors: {
+        type: [editorsSchema],
         required: true,
         default: [],
     },

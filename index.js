@@ -1,6 +1,7 @@
 const express = require("express");
 const enviroment = require("./enviroment");
 const userRoute = require("./routes/user");
+const workspaceRoute = require("./routes/workspace");
 const { connectDB } = require("./config/database");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
@@ -20,6 +21,7 @@ app.use(jwtCheck);
 app.use(unauthorized);
 
 app.use("/users", userRoute);
+app.use("/workspaces", workspaceRoute);
 
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);
