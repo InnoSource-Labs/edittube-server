@@ -5,11 +5,11 @@ const workspaceSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    created_at: {
+    createdAt: {
         type: String,
         required: true,
     },
-    updated_at: {
+    updatedAt: {
         type: String,
         required: true,
     },

@@ -1,8 +1,8 @@
 const User = require("../../models/user");
 
-async function updateLogedinUser(logedinUser) {
+async function updateLoggedinUser(loggedinUser) {
     const { uid, name, email, emailVerified, updatedAt, nickname, picture } =
-        logedinUser;
+        loggedinUser;
 
     const user = await User.findOne({ uid });
 
@@ -35,4 +35,4 @@ async function updateLogedinUser(logedinUser) {
     }
 }
 
-module.exports = { updateLogedinUser };
+module.exports = { updateLoggedinUser };
