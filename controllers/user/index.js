@@ -1,4 +1,5 @@
 const User = require("../../models/user");
+const { getTimeStampString } = require("../../utils");
 
 async function updateLoggedinUser(loggedinUser) {
     const { uid, name, email, emailVerified, updatedAt, nickname, picture } =
@@ -8,18 +9,20 @@ async function updateLoggedinUser(loggedinUser) {
 
     if (user) {
         if (user.updatedAt !== updatedAt) {
-            await user.updateOne({
-                updatedAt,
-                name: name || user.name,
-                email: email || user.email,
-                emailVerified,
-                nickname,
-                picture,
-            });
+            user.updatedAt = updatedAt;
+            if (name) user.name = name;
+            if (email) user.email = email;
+            user.emailVerified = emailVerified;
+            user.nickname = nickname;
+            user.picture = picture;
+
+            await user.save();
         }
+
         return { status: 200, user };
     } else {
-        const timestamp = new Date();
+        const timestamp = getTimeStampString();
+
         const newUser = new User({
             uid,
             name,
@@ -31,6 +34,7 @@ async function updateLoggedinUser(loggedinUser) {
             picture,
         });
         await newUser.save();
+
         return { status: 201, user: newUser };
     }
 }

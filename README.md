@@ -15,8 +15,11 @@
     -   video.js
     -   workspace.js
 -   routes
-    -   auth/index.js
+    -   user/index.js
+    -   workspace/index.js
     -   youtube/index.js
+-   utils
+    -   index.js
 -   index.js (Entry File)
 -   repo config files (README.md, package.json etc).
 
