@@ -62,9 +62,9 @@ router.post("/new", async (req, res) => {
 router.put("/edit/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { creatorId, clientId, clientSecret } = req.body;
+        const { clientId, clientSecret } = req.body;
 
-        if (id && creatorId && clientId && clientSecret) {
+        if (id && clientId && clientSecret) {
             const { status, workspace } = await editWorkspace(req.body, id);
             res.status(status).json(workspace);
         } else {
