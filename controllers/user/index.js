@@ -6,17 +6,22 @@ async function updateLoggedinUser(loggedinUser) {
         loggedinUser;
 
     const user = await User.findOne({ uid });
-
     if (user) {
         if (user.updatedAt !== updatedAt) {
-            user.updatedAt = updatedAt;
-            if (name) user.name = name;
-            if (email) user.email = email;
-            user.emailVerified = emailVerified;
-            user.nickname = nickname;
-            user.picture = picture;
+            const updatedUser = await User.findOneAndUpdate(
+                { uid },
+                {
+                    updatedAt,
+                    name,
+                    email,
+                    emailVerified,
+                    nickname,
+                    picture,
+                },
+                { new: true }
+            );
 
-            await user.save();
+            return { status: 200, user: updatedUser };
         }
 
         return { status: 200, user };
