@@ -32,7 +32,7 @@ async function getWorkspaces(uid, filter, page) {
     const totalresults = await Workspace.countDocuments(query);
 
     const workspacesReadOnly = workspaces.map((workspace) => {
-        getWorkspaceReadOnly(workspace, uid);
+        return getWorkspaceReadOnly(workspace, uid);
     });
 
     return {
