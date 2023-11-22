@@ -1,6 +1,22 @@
 const Workspace = require("../../models/workspace");
 
-let limit = 5;
+const limit = 5;
+
+function getWorkspaceReadOnly(workspaces, uid) {
+    return workspaces.map((workspace) => {
+        const role = workspace.creatorId === uid ? "creator" : "editor";
+
+        if (role === "editor") {
+            delete workspace._doc.clientId;
+            delete workspace._doc.clientSecret;
+        }
+
+        return {
+            ...workspace,
+            role,
+        };
+    });
+}
 
 async function getWorkspaces(uid, filter, page) {
     const isCreator = { creatorId: uid };
@@ -27,14 +43,11 @@ async function getWorkspaces(uid, filter, page) {
 
     const totalresults = await Workspace.countDocuments(query);
 
-    const workspacesWithRole = workspaces.map((workspace) => ({
-        ...workspace,
-        role: workspace.creatorId === uid ? "creator" : "editor",
-    }));
+    const workspacesReadOnly = getWorkspaceReadOnly(workspaces, uid);
 
     return {
         currentpage: page,
-        workspaces: workspacesWithRole,
+        workspaces: workspacesReadOnly,
         totalpages: Math.ceil(totalresults / limit),
     };
 }
