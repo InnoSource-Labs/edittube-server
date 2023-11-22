@@ -5,16 +5,14 @@ const limit = 5;
 function getWorkspaceReadOnly(workspaces, uid) {
     return workspaces.map((workspace) => {
         const role = workspace.creatorId === uid ? "creator" : "editor";
+        workspace._doc.role = role;
 
         if (role === "editor") {
             delete workspace._doc.clientId;
             delete workspace._doc.clientSecret;
         }
 
-        return {
-            ...workspace,
-            role,
-        };
+        return workspace;
     });
 }
 
@@ -36,7 +34,6 @@ async function getWorkspaces(uid, filter, page) {
               : { $or: [isCreator, isEditor] };
 
     const workspaces = await Workspace.find(query)
-        .exists("updatedAt")
         .sort("-updatedAt")
         .skip((page - 1) * limit)
         .limit(limit);
