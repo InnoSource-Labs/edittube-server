@@ -12,7 +12,7 @@ const editorsSchema = new mongoose.Schema({
 });
 
 const workspaceSchema = new mongoose.Schema({
-    id: {
+    name: {
         type: String,
         required: true,
     },
