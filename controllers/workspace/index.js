@@ -3,12 +3,19 @@ const { getTimeStampString } = require("../../utils");
 
 const limit = 5;
 
+async function isWorkspaceOwner(id, uid) {
+    const workspace = await Workspace.findById(id);
+    return workspace && workspace.creatorId === uid ? true : false;
+}
+
 function getWorkspaceReadOnly(workspace, uid) {
     const role = workspace.creatorId === uid ? "creator" : "editor";
-
     workspace._doc.role = role;
-    delete workspace._doc.clientId;
-    delete workspace._doc.clientSecret;
+
+    if (role === "editor") {
+        delete workspace._doc.clientId;
+        delete workspace._doc.clientSecret;
+    }
 
     return workspace;
 }
@@ -55,8 +62,8 @@ async function getOneWorkspace(id, uid) {
     }
 }
 
-async function addNewWorkspace(workspace) {
-    const { creatorId, name, clientId, clientSecret, editors } = workspace;
+async function addNewWorkspace(workspace, creatorId) {
+    const { name, clientId, clientSecret, editors } = workspace;
     const timestamp = getTimeStampString();
 
     const newWorkspace = new Workspace({
@@ -76,7 +83,15 @@ async function addNewWorkspace(workspace) {
     };
 }
 
-async function editWorkspace(data, id) {
+async function editWorkspace(data, id, uid) {
+    const verify = await isWorkspaceOwner(id, uid);
+    if (!verify) {
+        return {
+            status: 403,
+            workspace: null,
+        };
+    }
+
     const { name, clientId, clientSecret, editors } = data;
     const timestamp = getTimeStampString();
 
@@ -101,9 +116,13 @@ async function editWorkspace(data, id) {
     };
 }
 
-async function deleteWorkspace(id) {
+async function deleteWorkspace(id, uid) {
+    const verify = await isWorkspaceOwner(id, uid);
+    if (!verify) {
+        return 403;
+    }
     await Workspace.findOneAndDelete({ _id: id });
-    return;
+    return 200;
 }
 
 module.exports = {
