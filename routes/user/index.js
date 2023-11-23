@@ -5,8 +5,8 @@ const router = Router();
 
 router.post("/loggedin", async (req, res) => {
     try {
-        const { uid, email } = req.body;
-        if (uid && email) {
+        const { sub, email } = req.body;
+        if (sub && email) {
             const { status, user } = await updateLoggedinUser(req.body);
             res.status(status).json(user);
         } else {
