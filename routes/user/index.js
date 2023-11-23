@@ -10,10 +10,10 @@ router.post("/loggedin", async (req, res) => {
             const { status, user } = await updateLoggedinUser(req.body);
             res.status(status).json(user);
         } else {
-            res.status(400);
+            res.status(400).send();
         }
     } catch (error) {
-        res.status(500);
+        res.status(500).send();
     }
 });
 
