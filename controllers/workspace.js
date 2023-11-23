@@ -1,11 +1,16 @@
-const Workspace = require("../../models/workspace");
-const { getTimeStampString } = require("../../utils");
+const Workspace = require("../models/workspace");
+const { getTimeStampString } = require("../utils/healper");
 
 const limit = 5;
 
-async function isWorkspaceOwner(id, uid) {
+async function getHasWorkspaceOwnership(id, uid) {
     const workspace = await Workspace.findById(id);
-    return workspace && workspace.creatorId === uid ? true : false;
+    return !!workspace && workspace.creatorId === uid;
+}
+
+async function getHasWorkspaceEditorship(id, uid) {
+    const workspace = await Workspace.findById(id);
+    return !!workspace && !!workspace.editors.find((each) => each.uid === uid);
 }
 
 function getWorkspaceReadOnly(workspace, uid) {
@@ -49,19 +54,6 @@ async function getWorkspaces(uid, filter, page) {
     };
 }
 
-async function getOneWorkspace(id, uid) {
-    const workspace = await Workspace.findOne({ _id: id });
-
-    if (workspace) {
-        return {
-            status: 200,
-            workspace: getWorkspaceReadOnly(workspace, uid),
-        };
-    } else {
-        return { status: 404, workspace: null };
-    }
-}
-
 async function addNewWorkspace(workspace, creatorId) {
     const { name, clientId, clientSecret, editors } = workspace;
     const timestamp = getTimeStampString();
@@ -83,27 +75,39 @@ async function addNewWorkspace(workspace, creatorId) {
     };
 }
 
+async function getOneWorkspace(id, uid) {
+    const workspace = await Workspace.findOne({ _id: id });
+
+    if (workspace) {
+        return {
+            status: 200,
+            workspace: getWorkspaceReadOnly(workspace, uid),
+        };
+    } else {
+        return { status: 404, workspace: null };
+    }
+}
+
 async function editWorkspace(data, id, uid) {
-    const verify = await isWorkspaceOwner(id, uid);
+    const verify = await getHasWorkspaceOwnership(id, uid);
     if (!verify) {
         return {
-            status: 403,
+            status: 401,
             workspace: null,
         };
     }
 
     const { name, clientId, clientSecret, editors } = data;
-    const timestamp = getTimeStampString();
+    const updateObj = { updatedAt: getTimeStampString() };
+
+    if (name) updateObj.name = name;
+    if (clientId) updateObj.clientId = clientId;
+    if (clientSecret) updateObj.clientSecret = clientSecret;
+    if (editors) updateObj.editors = editors;
 
     const updatedWorkspace = await Workspace.findOneAndUpdate(
         { _id: id },
-        {
-            name,
-            clientId,
-            clientSecret,
-            updatedAt: timestamp,
-            editors,
-        },
+        updateObj,
         { new: true }
     );
 
@@ -117,9 +121,9 @@ async function editWorkspace(data, id, uid) {
 }
 
 async function deleteWorkspace(id, uid) {
-    const verify = await isWorkspaceOwner(id, uid);
+    const verify = await getHasWorkspaceOwnership(id, uid);
     if (!verify) {
-        return 403;
+        return 401;
     }
     await Workspace.findOneAndDelete({ _id: id });
     return 200;
@@ -127,8 +131,10 @@ async function deleteWorkspace(id, uid) {
 
 module.exports = {
     getWorkspaces,
-    getOneWorkspace,
     addNewWorkspace,
+    getOneWorkspace,
     editWorkspace,
     deleteWorkspace,
+    getHasWorkspaceOwnership,
+    getHasWorkspaceEditorship,
 };

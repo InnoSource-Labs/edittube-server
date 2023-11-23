@@ -1,7 +1,7 @@
 const { Router } = require("express");
-const { updateLoggedinUser } = require("../../controllers/user");
+const { updateLoggedinUser } = require("../controllers/user");
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.post("/loggedin", async (req, res) => {
     try {

@@ -4,10 +4,12 @@
 ## Folder Structure
 
 -   config
-    -   database/index.js
+    -   database.js
 -   controllers
-    -   cloudinary/index.js
-    -   youtube/index.js
+    -   user.js
+    -   video.js
+    -   workspace.js
+    -   youtube.js
 -   middleware
     -   auth.js
 -   modaels
@@ -15,11 +17,13 @@
     -   video.js
     -   workspace.js
 -   routes
-    -   user/index.js
-    -   workspace/index.js
-    -   youtube/index.js
+    -   user.js
+    -   video.js
+    -   workspace.js
+    -   youtube.js
 -   utils
-    -   index.js
+    -   cloudinary.js
+    -   healper.js
 -   index.js (Entry File)
 -   repo config files (README.md, package.json etc).
 
