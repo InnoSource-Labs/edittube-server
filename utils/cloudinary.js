@@ -1,6 +1,6 @@
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
-const enviroment = require("../../enviroment");
+const enviroment = require("../enviroment");
 
 cloudinary.config({
     cloud_name: enviroment.cloudinary_cloud_name,
@@ -9,7 +9,7 @@ cloudinary.config({
     secure: true,
 });
 
-function uploadtoCloudinary(videoBuffer) {
+function uploadToCloudinary(videoBuffer) {
     return new Promise((resolve, reject) => {
         let cld_upload_stream = cloudinary.uploader.upload_stream(
             {
@@ -36,4 +36,4 @@ async function deleteFromCloudinary(publicId) {
     }
 }
 
-module.exports = { uploadtoCloudinary, deleteFromCloudinary };
+module.exports = { uploadToCloudinary, deleteFromCloudinary };

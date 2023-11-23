@@ -1,11 +1,19 @@
-const User = require("../../models/user");
-const { getTimeStampString } = require("../../utils");
+const User = require("../models/user");
+const { getTimeStampString } = require("../utils/healper");
 
 async function updateLoggedinUser(loggedinUser) {
-    const { uid, name, email, emailVerified, updatedAt, nickname, picture } =
-        loggedinUser;
-
+    const {
+        sub,
+        name,
+        email,
+        email_verified: emailVerified,
+        updated_at: updatedAt,
+        nickname,
+        picture,
+    } = loggedinUser;
+    const uid = sub.split("|")[1];
     const user = await User.findOne({ uid });
+
     if (user) {
         if (user.updatedAt !== updatedAt) {
             const updatedUser = await User.findOneAndUpdate(

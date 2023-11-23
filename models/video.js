@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const videoSchema = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true,
-    },
     createdAt: {
         type: String,
         required: true,
@@ -26,6 +22,10 @@ const videoSchema = new mongoose.Schema({
         required: true,
     },
     url: {
+        type: String,
+        required: true,
+    },
+    cloudinaryId: {
         type: String,
         required: true,
     },

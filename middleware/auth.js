@@ -8,7 +8,7 @@ const jwtCheck = auth({
 });
 
 const unauthorized = (err, req, res, next) => {
-    if (err.name) {
+    if (err) {
         res.status(401).send("Unauthorized");
     } else {
         next();

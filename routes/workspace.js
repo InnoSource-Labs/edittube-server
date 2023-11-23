@@ -5,10 +5,10 @@ const {
     editWorkspace,
     deleteWorkspace,
     getOneWorkspace,
-} = require("../../controllers/workspace");
-const { getLoggedinUID } = require("../../utils");
+} = require("../controllers/workspace");
+const { getLoggedinUID } = require("../utils/healper");
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.get("/", async (req, res) => {
     try {
@@ -25,23 +25,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/:id", async (req, res) => {
-    try {
-        const uid = getLoggedinUID(req.auth);
-        const { id } = req.params;
-
-        if (id && uid) {
-            const data = await getOneWorkspace(id, uid);
-            res.status(200).json(data);
-        } else {
-            res.status(400).send();
-        }
-    } catch (error) {
-        res.status(500).send();
-    }
-});
-
-router.post("/new", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const { clientId, clientSecret, name } = req.body;
         const creatorId = getLoggedinUID(req.auth);
@@ -60,7 +44,23 @@ router.post("/new", async (req, res) => {
     }
 });
 
-router.put("/edit/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
+    try {
+        const uid = getLoggedinUID(req.auth);
+        const { id } = req.params;
+
+        if (id && uid) {
+            const { status, workspace } = await getOneWorkspace(id, uid);
+            res.status(status).json(workspace);
+        } else {
+            res.status(400).send();
+        }
+    } catch (error) {
+        res.status(500).send();
+    }
+});
+
+router.put("/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const { clientId, clientSecret, name } = req.body;
@@ -81,7 +81,7 @@ router.put("/edit/:id", async (req, res) => {
     }
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         const { id } = req.params;
         const uid = getLoggedinUID(req.auth);
