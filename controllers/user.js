@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { getTimeStampString } = require("../utils/healper");
+const { getTimeStampString } = require("../utils/helper");
 
 async function updateLoggedinUser(loggedinUser) {
     const {

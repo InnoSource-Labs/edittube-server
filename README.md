@@ -23,7 +23,7 @@
     -   youtube.js
 -   utils
     -   cloudinary.js
-    -   healper.js
+    -   helper.js
 -   index.js (Entry File)
 -   repo config files (README.md, package.json etc).
 

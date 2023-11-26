@@ -6,7 +6,7 @@ function getTimeStampString() {
     return new Date().toISOString();
 }
 
-function getWorkshopHasVerification(youtubeSecret) {
+function getWorkspaceHasVerification(youtubeSecret) {
     const youtubeSecretJSON = JSON.parse(youtubeSecret);
 
     return !!youtubeSecretJSON.token;
@@ -22,6 +22,6 @@ function removeWorkshopToken(youtubeSecret) {
 module.exports = {
     getLoggedinUID,
     getTimeStampString,
-    getWorkshopHasVerification,
+    getWorkspaceHasVerification,
     removeWorkshopToken,
 };

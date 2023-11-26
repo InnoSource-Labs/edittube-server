@@ -1,6 +1,6 @@
 const { Router } = require("express");
 const { approveVideo, regectVideo } = require("../controllers/review");
-const { getLoggedinUID } = require("../utils/healper");
+const { getLoggedinUID } = require("../utils/helper");
 
 const router = Router({ mergeParams: true });
 

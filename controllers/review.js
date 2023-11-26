@@ -2,7 +2,7 @@ const Video = require("../models/video");
 const Workspace = require("../models/workspace");
 const { getVideoIfHasAccess } = require("./video");
 const { deleteFromCloudinary } = require("../utils/cloudinary");
-const { getTimeStampString } = require("../utils/healper");
+const { getTimeStampString } = require("../utils/helper");
 const uploadVideoOnYouTube = require("../utils/youtube");
 
 async function approveVideo(workspaceId, videoId, uid) {

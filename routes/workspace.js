@@ -7,7 +7,8 @@ const {
     deleteWorkspace,
     getOneWorkspace,
 } = require("../controllers/workspace");
-const { getLoggedinUID } = require("../utils/healper");
+const { getLoggedinUID } = require("../utils/helper");
+const { getNewToken } = require("../utils/OAuth2");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -25,6 +26,7 @@ router.get("/", async (req, res) => {
         );
         res.status(200).json(data);
     } catch (error) {
+        console.log(error);
         res.status(500).send();
     }
 });
@@ -105,10 +107,19 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-router.post("/varify", async (req, res) => {
+router.get("/:id/:code", async (req, res) => {
     try {
-        console.log(req.body);
+        const { id,code } = req.params;
+        if (id && code) {
+            const status = await getNewToken(id, code);
+            res.status(status).send();
+        }
+        else 
+        {
+            res.status(400).send();
+        }
     } catch (error) {
+        console.log(error);
         res.status(500).send();
     }
 });

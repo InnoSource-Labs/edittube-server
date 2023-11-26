@@ -2,8 +2,8 @@ const Workspace = require("../models/workspace");
 const { getVerifyURI } = require("../utils/OAuth2");
 const {
     getTimeStampString,
-    getWorkshopHasVerification,
-} = require("../utils/healper");
+    getWorkspaceHasVerification,
+} = require("../utils/helper");
 
 const limit = 5;
 
@@ -26,7 +26,7 @@ function getWorkspaceReadOnly(workspace, uid) {
 
     if (
         role === "creator" &&
-        !getWorkshopHasVerification(workspace.youtubeSecret)
+        workspace.youtubeSecret && !getWorkspaceHasVerification(workspace.youtubeSecret)
     ) {
         workspace._doc.verifyURL = getVerifyURI(
             workspace.youtubeSecret,

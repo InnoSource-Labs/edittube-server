@@ -3,7 +3,7 @@ const {
     uploadToCloudinary,
     deleteFromCloudinary,
 } = require("../utils/cloudinary");
-const { getTimeStampString } = require("../utils/healper");
+const { getTimeStampString } = require("../utils/helper");
 const { getWorkspaceRoleById } = require("./workspace");
 
 const limit = 5;
