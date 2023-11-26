@@ -25,7 +25,7 @@ const videoSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    cloudinaryId: {
+    publicId: {
         type: String,
         required: true,
     },

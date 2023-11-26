@@ -1,25 +1,40 @@
 const Workspace = require("../models/workspace");
-const { getTimeStampString } = require("../utils/healper");
+const { getVerifyURI } = require("../utils/OAuth2");
+const {
+    getTimeStampString,
+    getWorkspaceHasVerification,
+} = require("../utils/helper");
 
 const limit = 5;
 
-async function getHasWorkspaceOwnership(id, uid) {
-    const workspace = await Workspace.findById(id);
-    return !!workspace && workspace.creatorId === uid;
+function getWorkspaceRole(workspace, uid) {
+    return workspace.creatorId === uid
+        ? "creator"
+        : workspace.editors.find((each) => each.uid === uid)
+          ? "editor"
+          : "none";
 }
 
-async function getHasWorkspaceEditorship(id, uid) {
+async function getWorkspaceRoleById(id, uid) {
     const workspace = await Workspace.findById(id);
-    return !!workspace && !!workspace.editors.find((each) => each.uid === uid);
+    return getWorkspaceRole(workspace, uid);
 }
 
 function getWorkspaceReadOnly(workspace, uid) {
-    const role = workspace.creatorId === uid ? "creator" : "editor";
+    const role = getWorkspaceRole(workspace, uid);
     workspace._doc.role = role;
 
-    if (role === "editor") {
-        delete workspace._doc.clientId;
-        delete workspace._doc.clientSecret;
+    if (
+        role === "creator" &&
+        workspace.youtubeSecret &&
+        !getWorkspaceHasVerification(workspace.youtubeSecret)
+    ) {
+        workspace._doc.verifyURL = getVerifyURI(
+            workspace.youtubeSecret,
+            workspace.id
+        );
+    } else {
+        delete workspace._doc.youtubeSecret;
     }
 
     return workspace;
@@ -55,14 +70,13 @@ async function getWorkspaces(uid, filter, page) {
 }
 
 async function addNewWorkspace(workspace, creatorId) {
-    const { name, clientId, clientSecret, editors } = workspace;
+    const { name, youtubeSecret, editors } = workspace;
     const timestamp = getTimeStampString();
 
     const newWorkspace = new Workspace({
         name,
         creatorId,
-        clientId,
-        clientSecret,
+        youtubeSecret: youtubeSecret,
         createdAt: timestamp,
         updatedAt: timestamp,
         editors,
@@ -89,7 +103,7 @@ async function getOneWorkspace(id, uid) {
 }
 
 async function editWorkspace(data, id, uid) {
-    const verify = await getHasWorkspaceOwnership(id, uid);
+    const verify = (await getWorkspaceRoleById(id, uid)) === "creator";
     if (!verify) {
         return {
             status: 401,
@@ -97,12 +111,11 @@ async function editWorkspace(data, id, uid) {
         };
     }
 
-    const { name, clientId, clientSecret, editors } = data;
+    const { name, youtubeSecret, editors } = data;
     const updateObj = { updatedAt: getTimeStampString() };
 
     if (name) updateObj.name = name;
-    if (clientId) updateObj.clientId = clientId;
-    if (clientSecret) updateObj.clientSecret = clientSecret;
+    if (youtubeSecret) updateObj.youtubeSecret = youtubeSecret;
     if (editors) updateObj.editors = editors;
 
     const updatedWorkspace = await Workspace.findOneAndUpdate(
@@ -121,7 +134,7 @@ async function editWorkspace(data, id, uid) {
 }
 
 async function deleteWorkspace(id, uid) {
-    const verify = await getHasWorkspaceOwnership(id, uid);
+    const verify = (await getWorkspaceRoleById(id, uid)) === "creator";
     if (!verify) {
         return 401;
     }
@@ -135,6 +148,5 @@ module.exports = {
     getOneWorkspace,
     editWorkspace,
     deleteWorkspace,
-    getHasWorkspaceOwnership,
-    getHasWorkspaceEditorship,
+    getWorkspaceRoleById,
 };

@@ -7,7 +7,7 @@ const {
     editVideo,
     deleteVideo,
 } = require("../controllers/video");
-const { getLoggedinUID } = require("../utils/healper");
+const { getLoggedinUID } = require("../utils/helper");
 
 const router = Router({ mergeParams: true });
 
