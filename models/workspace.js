@@ -28,14 +28,27 @@ const workspaceSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    clientId: {
+    youtubeSecret: {
         type: String,
         required: true,
     },
-    clientSecret: {
-        type: String,
-        required: true,
-    },
+    // clientId: {
+    //     type: String,
+    //     required: true,
+    // },
+    // clientSecret: {
+    //     type: String,
+    //     required: true,
+    // },
+    // redirectUris: {
+    //     type: String,
+    //     required: true,
+    //     default: [],
+    // },
+    // clientToken: {
+    //     type: String,
+    //     required: true,
+    // },
     editors: {
         type: [editorsSchema],
         required: true,

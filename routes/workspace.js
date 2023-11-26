@@ -1,3 +1,4 @@
+const multer = require("multer");
 const { Router } = require("express");
 const {
     getWorkspaces,
@@ -7,6 +8,9 @@ const {
     getOneWorkspace,
 } = require("../controllers/workspace");
 const { getLoggedinUID } = require("../utils/healper");
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const router = Router({ mergeParams: true });
 
@@ -25,14 +29,16 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", upload.single("jsonFile"), async (req, res) => {
     try {
-        const { clientId, clientSecret, name } = req.body;
+        const { name } = req.body;
+        const youtubeSecret = req.file.buffer.toString("utf-8");
+        const editors = JSON.parse(req.body.editors);
         const creatorId = getLoggedinUID(req.auth);
 
-        if (clientId && clientSecret && name) {
+        if (youtubeSecret && name) {
             const { status, workspace } = await addNewWorkspace(
-                req.body,
+                { name, youtubeSecret, editors },
                 creatorId
             );
             res.status(status).json(workspace);
@@ -60,15 +66,17 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", upload.single("jsonFile"), async (req, res) => {
     try {
         const { id } = req.params;
-        const { clientId, clientSecret, name } = req.body;
+        const { name } = req.body;
+        const youtubeSecret = req.file.buffer.toString("utf-8");
+        const editors = JSON.parse(req.body.editors);
         const uid = getLoggedinUID(req.auth);
 
-        if (id && clientId && clientSecret && name) {
+        if (id && youtubeSecret && name) {
             const { status, workspace } = await editWorkspace(
-                req.body,
+                { name, youtubeSecret, editors },
                 id,
                 uid
             );
@@ -92,6 +100,14 @@ router.delete("/:id", async (req, res) => {
         } else {
             res.status(400).send();
         }
+    } catch (error) {
+        res.status(500).send();
+    }
+});
+
+router.post("/varify", async (req, res) => {
+    try {
+        console.log(req.body);
     } catch (error) {
         res.status(500).send();
     }

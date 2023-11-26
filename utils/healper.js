@@ -6,4 +6,22 @@ function getTimeStampString() {
     return new Date().toISOString();
 }
 
-module.exports = { getLoggedinUID, getTimeStampString };
+function getWorkshopHasVerification(youtubeSecret) {
+    const youtubeSecretJSON = JSON.parse(youtubeSecret);
+
+    return !!youtubeSecretJSON.token;
+}
+
+function removeWorkshopToken(youtubeSecret) {
+    const youtubeSecretJSON = JSON.parse(youtubeSecret);
+
+    delete youtubeSecretJSON.token;
+    return JSON.stringify(youtubeSecretJSON);
+}
+
+module.exports = {
+    getLoggedinUID,
+    getTimeStampString,
+    getWorkshopHasVerification,
+    removeWorkshopToken,
+};
