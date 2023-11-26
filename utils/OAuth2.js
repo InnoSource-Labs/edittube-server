@@ -21,20 +21,20 @@ async function getNewToken(id, code) {
     const workspace = await Workspace.findById(id);
 
     if (workspace) {
-        try {
-            const credentials = JSON.parse(workspace.youtubeSecret);
-            const oauth2Client = getOauth2Client(credentials);
-            const res = await oauth2Client.getToken(code);
-            credentials.token = res.data;
-            await Workspace.findByIdAndUpdate(
-                { _id: id },
-                { youtubeSecret: JSON.stringify(credentials) },
-                { new: true }
-            );
-            return 200;
-        } catch (err) {
-            return 500;
-        }
+        const credentials = JSON.parse(workspace.youtubeSecret);
+        const oauth2Client = getOauth2Client(credentials);
+
+        const { res, tokens } = await oauth2Client.getToken(code);
+
+        credentials.token = tokens;
+
+        await Workspace.findByIdAndUpdate(
+            { _id: id },
+            { youtubeSecret: JSON.stringify(credentials) },
+            { new: true }
+        );
+
+        return res.status;
     } else {
         return 404;
     }
@@ -48,6 +48,7 @@ function getVerifyURI(credentialsStr, id) {
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: "offline",
         scope: SCOPES,
+        prompt: "consent",
         state: id,
     });
 
@@ -56,11 +57,10 @@ function getVerifyURI(credentialsStr, id) {
 
 function authorize(credentialsStr, id) {
     const credentials = JSON.parse(credentialsStr);
-
     const oauth2Client = getOauth2Client(credentials);
 
     if (credentials.token) {
-        oauth2Client.credentials = JSON.parse(credentials.token);
+        oauth2Client.credentials = credentials.token;
         return oauth2Client;
     } else {
         getVerifyURI(credentialsStr, id);

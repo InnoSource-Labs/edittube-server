@@ -22,23 +22,29 @@ function uploadVideoOnYouTube(workspaceId, credentialsStr, video) {
                     },
                     status: {
                         privacyStatus: "public",
+                        selfDeclaredMadeForKids: false,
                     },
                 },
                 media: {
                     body: readable,
                 },
             },
-            function (err, response) {
-                if (err) {
+            function (err, res) {
+                if (err || !res.data.id) {
                     return {
-                        status: 500,
+                        status: err.status || 403,
                         video,
                     };
                 }
-                console.log("Video uploaded.", response.data);
+
+                const id = res.data.id;
                 return {
-                    status: 200,
-                    video,
+                    status: err.status,
+                    video: {
+                        ...video,
+                        url: `https://www.youtube.com/watch?v=${id}`,
+                        publicId: id,
+                    },
                 };
             }
         );

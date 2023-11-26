@@ -5,7 +5,6 @@ const userRoute = require("./routes/user");
 const videoRoute = require("./routes/video");
 const reviewRoute = require("./routes/review");
 const workspaceRoute = require("./routes/workspace");
-const verifyRoute = require("./routes/verify");
 const { jwtCheck, unauthorized } = require("./middleware/auth");
 const { connectDB } = require("./config/database");
 
@@ -25,7 +24,6 @@ app.use("/users", userRoute);
 app.use("/workspaces", workspaceRoute);
 app.use("/workspaces/:workspaceId/videos", videoRoute);
 app.use("/workspaces/:workspaceId/videos/:videoId", reviewRoute);
-app.use("/verify", verifyRoute);
 
 app.listen(port, () => {
     console.log(`Server is Fire at http://localhost:${port}`);

@@ -26,7 +26,6 @@ router.get("/", async (req, res) => {
         );
         res.status(200).json(data);
     } catch (error) {
-        console.log(error);
         res.status(500).send();
     }
 });
@@ -111,6 +110,7 @@ router.get("/:id/verify", async (req, res) => {
     try {
         const { id } = req.params;
         const { code } = req.query;
+
         if (id && code) {
             const status = await getNewToken(id, code);
             res.status(status).send();
@@ -118,7 +118,6 @@ router.get("/:id/verify", async (req, res) => {
             res.status(400).send();
         }
     } catch (error) {
-        console.log(error);
         res.status(500).send();
     }
 });

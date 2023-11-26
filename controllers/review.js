@@ -15,25 +15,32 @@ async function approveVideo(workspaceId, videoId, uid) {
     const workspace = await Workspace.findById(workspaceId);
 
     if (video) {
-        // const updateObj = {
-        //     updatedAt: getTimeStampString(),
-        //     status: "approved",
-        // };
+        const updateObj = {
+            updatedAt: getTimeStampString(),
+            status: "approved",
+        };
 
-        uploadVideoOnYouTube(workspaceId, workspace.youtubeSecret, video);
-        // excute function to upload on youtube
-        // get youtube url and publicId
-        // put above on updateObj
+        const { status: resStatus, video: resVideo } = uploadVideoOnYouTube(
+            workspaceId,
+            workspace.youtubeSecret,
+            video
+        );
+        let updatedVideo = video;
 
-        // const updatedVideo = await Video.findOneAndUpdate(
-        //     { _id: videoId },
-        //     updateObj,
-        //     { new: true }
-        // );
+        if (video.publicId !== resVideo.publicId) {
+            updateObj.publicId = resVideo.publicId;
+            updateObj.url = resVideo.url;
+
+            updatedVideo = await Video.findOneAndUpdate(
+                { _id: videoId },
+                updateObj,
+                { new: true }
+            );
+        }
 
         return {
-            status: 200,
-            video,
+            status: resStatus,
+            video: updatedVideo,
         };
     } else {
         return { status, video };

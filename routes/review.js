@@ -20,7 +20,6 @@ router.post("/approve", async (req, res) => {
             res.status(400).send();
         }
     } catch (err) {
-        console.log(err);
         res.status(500).send();
     }
 });
