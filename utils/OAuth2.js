@@ -21,24 +21,20 @@ async function getNewToken(id, code) {
     const workspace = await Workspace.findById(id);
 
     if (workspace) {
-        const credentials = JSON.parse(workspace.youtubeSecret);
-
-        const oauth2Client = getOauth2Client(credentials);
-
-        oauth2Client.getToken(code, async function (err, token) {
-            if (err) {
-                return 500;
-            }
-
-            oauth2Client.credentials = token;
-            credentials.token = token;
+        try {
+            const credentials = JSON.parse(workspace.youtubeSecret);
+            const oauth2Client = getOauth2Client(credentials);
+            const res = await oauth2Client.getToken(code);
+            credentials.token = res.data;
             await Workspace.findByIdAndUpdate(
                 { _id: id },
                 { youtubeSecret: JSON.stringify(credentials) },
                 { new: true }
             );
             return 200;
-        });
+        } catch (err) {
+            return 500;
+        }
     } else {
         return 404;
     }

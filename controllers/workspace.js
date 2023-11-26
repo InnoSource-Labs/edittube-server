@@ -26,7 +26,8 @@ function getWorkspaceReadOnly(workspace, uid) {
 
     if (
         role === "creator" &&
-        workspace.youtubeSecret && !getWorkspaceHasVerification(workspace.youtubeSecret)
+        workspace.youtubeSecret &&
+        !getWorkspaceHasVerification(workspace.youtubeSecret)
     ) {
         workspace._doc.verifyURL = getVerifyURI(
             workspace.youtubeSecret,
@@ -102,7 +103,7 @@ async function getOneWorkspace(id, uid) {
 }
 
 async function editWorkspace(data, id, uid) {
-    const verify = (await await getWorkspaceRoleById(id, uid)) === "creator";
+    const verify = (await getWorkspaceRoleById(id, uid)) === "creator";
     if (!verify) {
         return {
             status: 401,
@@ -133,7 +134,7 @@ async function editWorkspace(data, id, uid) {
 }
 
 async function deleteWorkspace(id, uid) {
-    const verify = (await await getWorkspaceRoleById(id, uid)) === "creator";
+    const verify = (await getWorkspaceRoleById(id, uid)) === "creator";
     if (!verify) {
         return 401;
     }

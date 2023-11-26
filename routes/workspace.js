@@ -107,15 +107,14 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-router.get("/:id/:code", async (req, res) => {
+router.get("/:id/verify", async (req, res) => {
     try {
-        const { id,code } = req.params;
+        const { id } = req.params;
+        const { code } = req.query;
         if (id && code) {
             const status = await getNewToken(id, code);
             res.status(status).send();
-        }
-        else 
-        {
+        } else {
             res.status(400).send();
         }
     } catch (error) {
