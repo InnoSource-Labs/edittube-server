@@ -20,11 +20,12 @@ async function approveVideo(workspaceId, videoId, uid) {
             status: "approved",
         };
 
-        const { status: resStatus, video: resVideo } = uploadVideoOnYouTube(
-            workspaceId,
-            workspace.youtubeSecret,
-            video
-        );
+        const { status: resStatus, video: resVideo } =
+            await uploadVideoOnYouTube(
+                workspaceId,
+                workspace.youtubeSecret,
+                video
+            );
         let updatedVideo = video;
 
         if (video.publicId !== resVideo.publicId) {
