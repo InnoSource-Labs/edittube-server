@@ -8,9 +8,9 @@ async function uploadVideoOnYouTube(workspaceId, credentialsStr, video) {
     if (auth) {
         try {
             const { title, description, url } = video;
-            const readable = await fetch(url).then((r) =>
-                stream.Readable.fromWeb(r.body)
-            );
+
+            const videoRes = await fetch(url);
+            const readable = await stream.Readable.fromWeb(videoRes.body);
 
             let res = await google.youtube("v3").videos.insert({
                 auth: auth,
