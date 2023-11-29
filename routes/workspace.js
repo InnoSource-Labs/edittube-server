@@ -1,4 +1,3 @@
-const multer = require("multer");
 const { Router } = require("express");
 const {
     getWorkspaces,
@@ -10,9 +9,6 @@ const {
 const { getLoggedinUID } = require("../utils/helper");
 const { getNewToken } = require("../utils/OAuth2");
 const enviroment = require("../enviroment");
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 const router = Router({ mergeParams: true });
 
@@ -33,9 +29,8 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        const { name } = req.body;
+        const { name, editors } = req.body;
         const youtubeSecret = enviroment.youtube_secret;
-        const editors = req.body.editors;
         const creatorId = getLoggedinUID(req.auth);
 
         if (youtubeSecret && name) {
@@ -68,12 +63,11 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-router.put("/:id", upload.single("jsonFile"), async (req, res) => {
+router.put("/:id", async (req, res) => {
     try {
         const { id } = req.params;
-        const { name } = req.body;
-        const youtubeSecret = req.file.buffer.toString("utf-8");
-        const editors = JSON.parse(req.body.editors);
+        const { name, editors } = req.body;
+        const youtubeSecret = enviroment.youtube_secret;
         const uid = getLoggedinUID(req.auth);
 
         if (id && youtubeSecret && name) {
@@ -123,7 +117,6 @@ router.get("/:id/verify", async (req, res) => {
             error.response.data.error === "invalid_grant" &&
             error.response.data.error_description === "Bad Request"
         ) {
-            console.log("One");
             res.status(200).send();
         }
         res.status(500).send();
