@@ -9,6 +9,7 @@ const {
 } = require("../controllers/workspace");
 const { getLoggedinUID } = require("../utils/helper");
 const { getNewToken } = require("../utils/OAuth2");
+const enviroment = require("../enviroment");
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -30,11 +31,11 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", upload.single("jsonFile"), async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const { name } = req.body;
-        const youtubeSecret = req.file.buffer.toString("utf-8");
-        const editors = JSON.parse(req.body.editors);
+        const youtubeSecret = enviroment.youtube_secret;
+        const editors = req.body.editors;
         const creatorId = getLoggedinUID(req.auth);
 
         if (youtubeSecret && name) {
@@ -118,6 +119,13 @@ router.get("/:id/verify", async (req, res) => {
             res.status(400).send();
         }
     } catch (error) {
+        if (
+            error.response.data.error === "invalid_grant" &&
+            error.response.data.error_description === "Bad Request"
+        ) {
+            console.log("One");
+            res.status(200).send();
+        }
         res.status(500).send();
     }
 });

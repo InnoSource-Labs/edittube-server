@@ -11,6 +11,7 @@ const enviroment = {
     cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
     auth_domin: process.env.AUTH_DOMAIN,
     api_identifier: process.env.API_IDENTIFIER,
+    youtube_secret: process.env.YOUTUBE_SECRET,
 };
 
 module.exports = enviroment;
