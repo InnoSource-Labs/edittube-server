@@ -17,7 +17,7 @@
     -   video.js
     -   workspace.js
 -   routes
-    -   rebiew.js
+    -   review.js
     -   user.js
     -   video.js
     -   workspace.js
