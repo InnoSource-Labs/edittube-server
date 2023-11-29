@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { approveVideo, regectVideo } = require("../controllers/review");
+const { approveVideo, rejectVideo } = require("../controllers/review");
 const { getLoggedinUID } = require("../utils/helper");
 
 const router = Router({ mergeParams: true });
@@ -31,7 +31,7 @@ router.post("/reject", async (req, res) => {
         const { keepVideo } = req.body;
 
         if (workspaceId && videoId) {
-            const { status, video } = await regectVideo(
+            const { status, video } = await rejectVideo(
                 workspaceId,
                 videoId,
                 uid,

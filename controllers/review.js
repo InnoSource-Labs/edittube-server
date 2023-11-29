@@ -48,7 +48,7 @@ async function approveVideo(workspaceId, videoId, uid) {
     }
 }
 
-async function regectVideo(workspaceId, videoId, uid, keepVideo) {
+async function rejectVideo(workspaceId, videoId, uid, keepVideo) {
     const { status, video } = await getVideoIfHasAccess(
         workspaceId,
         videoId,
@@ -82,4 +82,4 @@ async function regectVideo(workspaceId, videoId, uid, keepVideo) {
     }
 }
 
-module.exports = { approveVideo, regectVideo };
+module.exports = { approveVideo, rejectVideo };
